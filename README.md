@@ -39,3 +39,10 @@ El atajo debe guardar cada pago como una línea JSON en un archivo `GastosLAB-in
 Para incorporar los pagos, abre GastosLAB desde su icono, entra en Configuración > Bandeja de entrada del atajo y selecciona `GastosLAB-inbox.jsonl` desde Archivos. La importación añade únicamente movimientos nuevos; los identificadores UUID evitan duplicados si se vuelve a importar el mismo archivo. Después de importar, no borres el archivo si quieres conservar el histórico de la bandeja.
 
 La PWA no puede leer silenciosamente archivos de iCloud Drive por las restricciones de iOS; por eso la selección del archivo en GastosLAB es manual. El archivo contiene datos financieros, así que mantenlo en tu iCloud privado.
+
+
+## Formulario público de registro rápido (v1.8)
+
+Publica también `quick.html` en la raíz de GitHub Pages. Configura el atajo BBVA para abrir `https://TU-USUARIO.github.io/TU-REPOSITORIO/quick.html` en lugar de `index.html?action=add-expense`. Esta página no ejecuta la autenticación ni accede al almacenamiento financiero. Al guardar, genera un archivo individual `.jsonl`; en iPhone usa Compartir > Guardar en Archivos y selecciona iCloud Drive.
+
+En la PWA instalada, entra en Configuración > Bandeja de entrada del atajo y selecciona uno o varios archivos `.jsonl`. Los registros se añaden a los movimientos existentes y los UUID evitan duplicados. La selección del archivo sigue siendo una acción manual de iOS; la página web no puede escribir directamente en una carpeta privada de iCloud Drive.
