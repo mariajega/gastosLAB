@@ -1,2 +1,2 @@
-// Configura aquí la URL pública del Cloudflare Worker después de desplegarlo.
-window.GASTOSLAB_ACCESS_API = 'https://REEMPLAZAR.workers.dev';
+// URL pública del servicio de autorizaciones GastosLAB.
+window.GASTOSLAB_ACCESS_API = 'https://gastoslab-access.mariajesusgarciaparicio.workers.dev';
