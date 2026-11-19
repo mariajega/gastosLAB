@@ -36,6 +36,65 @@
 
 
 body.demo-preview #app{pointer-events:none;user-select:none}body.demo-preview #app button,body.demo-preview #app a,body.demo-preview #app input,body.demo-preview #app select{visibility:hidden!important}body.demo-preview #app .main{margin-left:0}body.demo-preview #app .topbar{padding-left:20px}
+
+/* GastosLAB mobile-first interaction layer */
+:root{--g-vv-height:100dvh;--g-vv-top:0px}
+@media(max-width:720px){
+  html,body{width:100%;min-height:100%;overscroll-behavior-y:contain}
+  body{font-size:16px;-webkit-text-size-adjust:100%}
+  .app{min-height:100dvh}
+  .content{padding:16px 12px calc(100px + env(safe-area-inset-bottom))}
+  .topbar{height:54px;padding:0 14px}
+  .modal-backdrop{position:fixed;left:0;right:0;top:var(--g-vv-top);bottom:auto;height:var(--g-vv-height);min-height:0;padding:0;align-items:flex-end;justify-content:center;overflow:hidden}
+  .modal,.modal:has(.tx-entry-form){width:100%;max-width:none;height:auto;max-height:100%;min-height:0;margin:0;border-radius:20px 20px 0 0;display:flex;flex-direction:column;overflow:hidden;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -8px 32px #0d274622}
+  .modal:has(.tx-entry-form){height:min(100%,760px)}
+  .modal-head{flex:0 0 auto;padding:12px 16px;min-height:54px}
+  .modal-head h2{font-size:16px}
+  .modal-head .xbtn{width:36px;height:36px}
+  .modal-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:12px 14px 18px}
+  .modal:has(.tx-entry-form) .modal-body{padding:10px 13px 18px}
+  .tx-entry-form{gap:10px}
+  .type-switch{flex:0 0 auto;display:flex;gap:4px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;margin:0 0 2px;padding:3px;white-space:nowrap}
+  .type-switch::-webkit-scrollbar{display:none}
+  .type-switch button{flex:1 0 auto;min-width:max-content;padding:9px 12px;font-size:12px;min-height:40px}
+  .tx-amount-field{padding:10px 13px 8px;border-radius:13px}
+  .tx-amount-field>label{font-size:11px;margin-bottom:2px}
+  .tx-amount-input input{font-size:32px;line-height:1.25;min-height:42px;padding:3px 0}
+  .tx-amount-input span{font-size:20px}
+  .tx-entry-form .field{gap:5px;margin-bottom:7px}
+  .tx-entry-form .field label{font-size:11px}
+  .tx-category-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .tx-category{min-height:62px;padding:6px 3px;border-radius:11px;gap:3px;touch-action:manipulation}
+  .tx-category-icon{font-size:22px}
+  .tx-category-name{font-size:10px;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+  .tx-entry-row{grid-template-columns:1fr 1fr;gap:8px}
+  .tx-entry-form input,.tx-entry-form select,.tx-entry-form textarea{font-size:16px!important;min-height:44px;padding:9px 10px}
+  .tx-more{padding-top:7px}
+  .tx-more summary{font-size:13px;padding:7px 0;min-height:38px}
+  .tx-more textarea{min-height:64px}
+  .modal-foot{flex:0 0 auto;position:relative;bottom:auto;display:flex;gap:8px;padding:10px 13px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line)}
+  .modal:has(.tx-entry-form) .modal-foot{position:relative;bottom:auto;padding:10px 13px calc(10px + env(safe-area-inset-bottom));}
+  .modal-foot .btn{flex:1;min-height:46px;font-size:14px}
+  .modal-foot .btn.primary{flex:1.25}
+  .modal-backdrop.keyboard-open .modal:has(.tx-entry-form){height:100%;max-height:100%;border-radius:16px 16px 0 0}
+  .modal-backdrop.keyboard-open .modal-head{min-height:46px;padding:7px 14px}
+  .modal-backdrop.keyboard-open .modal:has(.tx-entry-form) .modal-body{padding-top:7px;padding-bottom:8px}
+  .modal-backdrop.keyboard-open .tx-entry-form{gap:7px}
+  .modal-backdrop.keyboard-open .tx-category{min-height:52px}
+  .modal-backdrop.keyboard-open .tx-category-icon{font-size:19px}
+  .modal-backdrop.keyboard-open .tx-amount-field{padding:7px 11px}
+  .modal-backdrop.keyboard-open .tx-amount-input input{font-size:27px;min-height:34px}
+  .modal-backdrop.keyboard-open .modal-foot{padding-top:7px;padding-bottom:calc(7px + env(safe-area-inset-bottom))}
+}
+@media(max-width:390px){
+  .tx-category-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+  .tx-category{min-height:56px}
+  .tx-category-icon{font-size:20px}
+  .tx-category-name{font-size:9px}
+  .tx-entry-row{gap:6px}
+  .modal:has(.tx-entry-form) .modal-body{padding-left:11px;padding-right:11px}
+}
+
 </style>
 </head>
 <body>
@@ -97,8 +156,17 @@ function renderWealth(){const net=data.accounts.reduce((s,a)=>s+accountBalance(a
 function renderInsights(){const m=currentMonth(),t=totals(monthTx(m)),prev=new Date();prev.setMonth(prev.getMonth()-1);const pm=prev.toISOString().slice(0,7),pt=totals(monthTx(pm));const diff=t.expense-pt.expense;const cats={};allExpenses(monthTx(m)).forEach(x=>cats[x.category]=(cats[x.category]||0)+num(x.amount));const top=Object.entries(cats).sort((a,b)=>b[1]-a[1])[0];const savings=t.income-t.expense;let items=[];if(!data.transactions.length)items.push(['💡','Empieza registrando tus movimientos','Cuando tengas datos, GastosLAB podrá identificar tendencias y patrones de gasto.']);else{items.push(['📊','Balance del mes',`Has registrado ${money(t.income)} de ingresos y ${money(t.expense)} de gastos. El balance es ${money(savings)}.`]);if(pt.expense>0)items.push([diff>0?'↗':'↘','Comparativa de gastos',`Tus gastos están ${diff>=0?'por encima':'por debajo'} del mes anterior en ${money(Math.abs(diff))}.`]);if(top)items.push(['🎯','Categoría con mayor gasto',`${top[0]} concentra ${money(top[1])} de tus gastos de este mes.`]);if(savings<0)items.push(['⚠️','Gastos superiores a ingresos','Este mes has registrado más gastos que ingresos. Revisa las categorías y los movimientos.']);else items.push(['🌱','Ahorro registrado',`Tu diferencia entre ingresos y gastos es ${money(savings)} este mes.`])}return `${head('Análisis inteligente','Conclusiones calculadas a partir de tus movimientos. Sin enviar tus datos a ningún servicio externo.')}<div class="card">${items.map(x=>`<div class="insight"><div class="i">${x[0]}</div><div><b>${x[1]}</b><p>${x[2]}</p></div></div>`).join('')}<p class="footnote">Los análisis son reglas estadísticas locales y descriptivas; no constituyen asesoramiento financiero.</p></div>`}
 function renderSettings(){return `${head('Configuración','Personaliza GastosLAB y gestiona tus datos.')}<section class="card category-settings" style="margin-bottom:17px">${cardHead('Mis categorías','Añade, renombra, cambia el icono o elimina categorías de gastos.',`<button class="btn primary small" id="addCategoryBtn">＋ Añadir categoría</button>`)}<div class="category-manage-list">${categories.map(([name,icon])=>`<div class="category-manage-row"><span class="category-manage-icon">${icon}</span><b>${esc(name)}</b><select class="select-mini category-icon-select" data-category-icon="${esc(name)}" aria-label="Icono de ${esc(name)}">${categoryIcons.map(i=>`<option value="${i}" ${i===icon?'selected':''}>${i}</option>`).join('')}</select><button class="btn small" data-rename-category="${esc(name)}">Renombrar</button><button class="btn danger small" data-delete-category="${esc(name)}">Eliminar</button></div>`).join('')}</div><p class="footnote">Las categorías e iconos se guardan en este dispositivo y aparecen en el selector visual al registrar gastos.</p></section><div class="grid section-grid"><section class="card">${cardHead('Privacidad y visualización')}<div class="setting-row"><div><b>Ocultar importes</b><p>Difumina los importes en todas las secciones.</p></div><input type="checkbox" class="switch" id="privacySetting" ${data.settings.privacy?'checked':''}></div><div class="setting-row"><div><b>Moneda</b><p>Moneda utilizada para mostrar los importes.</p></div><select id="currencySetting" class="select-mini"><option value="EUR">EUR · Euro</option></select></div></section><section class="card">${cardHead('Copias de seguridad','Copia automática diaria local y exportación manual.')}<button class="btn primary" style="width:100%;margin-bottom:9px" id="exportBtn">↓ Exportar copia JSON</button><label class="btn" style="width:100%;margin-bottom:9px;cursor:pointer">↑ Importar copia JSON<input id="importFile" type="file" accept="application/json,.json" hidden></label><p class="footnote">Se conservan hasta 14 copias diarias en este navegador. Exporta también una copia externa para protegerte ante pérdida del dispositivo o borrado de datos.</p><div id="backupStatus" class="footnote">${(JSON.parse(localStorage.getItem(BACKUP_KEY)||'[]').length)} copias locales guardadas (máximo 14).</div><button class="btn" style="width:100%;margin-top:8px" id="restoreLocalBtn">Restaurar una copia local anterior</button></section><section class="card">${cardHead('Datos y almacenamiento')}<div class="setting-row"><div><b>Almacenamiento local</b><p>Los datos se guardan en este navegador, en este dispositivo.</p></div><span class="pill green">Activo</span></div><div class="setting-row"><div><b>Conexión bancaria</b><p>No hay conexiones con entidades financieras.</p></div><span class="pill">Desactivada</span></div>${data.settings.demo?'<button class="btn danger" style="margin-top:14px" id="clearDemoBtn">Borrar datos de ejemplo y configurar mis cuentas</button>':'<button class="btn danger" style="margin-top:14px" id="resetBtn">Borrar todos los datos y volver a configurar</button>'}</section></div><p class="footnote">GastosLAB 1.7 · Acceso mediante invitación · No introduzcas credenciales bancarias ni datos sensibles en descripciones.</p>`}
 function render(){const views={home:renderHome,transactions:renderTransactions,recurring:renderRecurring,analytics:renderAnalytics,budgets:renderBudgets,goals:renderGoals,wealth:renderWealth,insights:renderInsights,settings:renderSettings};$('#view').innerHTML=(views[page]||renderHome)();document.body.classList.toggle('privacy',!!data.settings.privacy)}
-function openModal(title,body,buttons){$('#modalTitle').textContent=title;$('#modalBody').innerHTML=body;$('#modalFoot').innerHTML=buttons;$('#modalBackdrop').classList.add('open')}
-function closeModal(){$('#modalBackdrop').classList.remove('open');editingId=null}
+function updateModalViewport(){
+  const vv=window.visualViewport,backdrop=$('#modalBackdrop');
+  if(!backdrop)return;
+  if(vv){backdrop.style.setProperty('--g-vv-height',`${vv.height}px`);backdrop.style.setProperty('--g-vv-top',`${Math.max(0,vv.offsetTop)}px`);}
+  const keyboard=!!(vv&&window.innerHeight-vv.height>140);
+  backdrop.classList.toggle('keyboard-open',keyboard);
+}
+if(window.visualViewport){visualViewport.addEventListener('resize',updateModalViewport);visualViewport.addEventListener('scroll',updateModalViewport)}
+window.addEventListener('orientationchange',()=>setTimeout(updateModalViewport,250));
+function openModal(title,body,buttons){$('#modalTitle').textContent=title;$('#modalBody').innerHTML=body;$('#modalFoot').innerHTML=buttons;$('#modalBackdrop').classList.add('open');updateModalViewport()}
+function closeModal(){$('#modalBackdrop').classList.remove('open','keyboard-open');$('#modalBackdrop').style.removeProperty('--g-vv-height');$('#modalBackdrop').style.removeProperty('--g-vv-top');if(document.activeElement?.blur)document.activeElement.blur();editingId=null}
 function field(label,id,value='',type='text',extra=''){return `<div class="field"><label for="${id}">${label}</label><input id="${id}" type="${type}" value="${esc(value)}" ${extra}></div>`}
 function accountOptions(selected){return data.accounts.map(a=>`<option value="${a.id}" ${a.id===selected?'selected':''}>${esc(a.name)}</option>`).join('')}
 function categoryOptions(selected){return categories.map(c=>`<option value="${c[0]}" ${c[0]===selected?'selected':''}>${c[1]} ${c[0]}</option>`).join('')}
@@ -139,7 +207,8 @@ function openTx(type='expense',t=null,source=''){
   refreshKind();$('#cancelModal').onclick=closeModal;
   $('#saveTx').onclick=()=>{const amount=num($('#txAmount').value),date=$('#txDate').value,accountId=$('#txAccount').value,toAccountId=$('#txToAccount')?.value;if(!(amount>0)||!date){toast('Introduce un importe y una fecha válidos.');return}if(txType==='transfer'&&accountId===toAccountId){toast('Elige dos cuentas diferentes.');return}const obj={id:editingId||uid(),type:txType,amount,date,accountId,merchant:$('#txMerchant').value.trim(),category:txType==='transfer'?'Transferencia':$('#txCategory').value,method:$('#txMethod')?.value||'',description:$('#txDescription')?.value.trim()||'',toAccountId:txType==='transfer'?toAccountId:null};if(editingId){const i=data.transactions.findIndex(x=>x.id===editingId);data.transactions[i]=obj}else data.transactions.push(obj);save();closeModal();render();toast('Movimiento guardado')};
   if(t)$('#deleteTx').onclick=()=>{if(confirm('¿Eliminar este movimiento?')){data.transactions=data.transactions.filter(x=>x.id!==t.id);save();closeModal();render();toast('Movimiento eliminado')}};
-  setTimeout(()=>$('#txAmount')?.focus(),120);
+  // No auto-focus: avoids opening the iOS keyboard over the form on every launch.
+  // The user opens the numeric keyboard by tapping the amount field.
 }
 function openRecurring(r=null){const body=`<div class="form-grid">${field('Nombre','rName',r?.name||'','text','placeholder="Ej. Gimnasio, electricidad…" required')}${field('Importe (€)','rAmount',r?.amount||'','number','step="0.01" min="0.01" required')}<div class="field"><label for="rType">Tipo</label><select id="rType"><option value="expense" ${r?.type!=='income'?'selected':''}>Gasto</option><option value="income" ${r?.type==='income'?'selected':''}>Ingreso</option></select></div><div class="field"><label for="rFreq">Frecuencia</label><select id="rFreq">${['Mensual','Trimestral','Semestral','Anual','Semanal'].map(x=>`<option ${r?.frequency===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="field"><label for="rCat">Categoría</label><select id="rCat">${categoryOptions(r?.category||'Hogar')}</select></div>${field('Próxima fecha','rDate',r?.nextDate||new Date().toISOString().slice(0,10),'date')}</div>`;openModal(r?'Editar recurrente':'Nuevo recurrente',body,`<button class="btn" id="cancelModal">Cancelar</button><button class="btn primary" id="saveRecurring">Guardar</button>`);$('#cancelModal').onclick=closeModal;$('#saveRecurring').onclick=()=>{const o={id:r?.id||uid(),name:$('#rName').value.trim(),amount:num($('#rAmount').value),type:$('#rType').value,frequency:$('#rFreq').value,category:$('#rCat').value,nextDate:$('#rDate').value};if(!o.name||o.amount<=0||!o.nextDate){toast('Completa los campos obligatorios.');return}if(r)data.recurring=data.recurring.map(x=>x.id===r.id?o:x);else data.recurring.push(o);save();closeModal();render();toast('Recurrente guardado')}}
 function openBudget(){const body=`<div class="field"><label for="bCat">Categoría</label><select id="bCat">${categoryOptions('Comida')}</select></div>${field('Límite mensual (€)','bLimit','','number','min="1" step="0.01" placeholder="Ej. 250" required')}`;openModal('Crear presupuesto',body,`<button class="btn" id="cancelModal">Cancelar</button><button class="btn primary" id="saveBudget">Guardar</button>`);$('#cancelModal').onclick=closeModal;$('#saveBudget').onclick=()=>{const category=$('#bCat').value,limit=num($('#bLimit').value);if(limit<=0){toast('Introduce un límite válido.');return}if(data.budgets.some(x=>x.category===category)){toast('Ya existe un presupuesto para esta categoría.');return}data.budgets.push({id:uid(),category,limit});save();closeModal();render();toast('Presupuesto creado')}}
