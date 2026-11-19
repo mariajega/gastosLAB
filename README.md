@@ -38,3 +38,28 @@ La primera apertura muestra movimientos ficticios para explorar los gráficos y 
 ## Copias automáticas locales
 
 GastosLAB conserva hasta 14 copias diarias en el almacenamiento local del navegador. Si la app está abierta a medianoche, crea una copia entonces; si estaba cerrada, la crea al volver a abrirla ese día. Estas copias protegen frente a errores de la app, pero no frente al borrado completo del almacenamiento del navegador o la pérdida del dispositivo. Exporta periódicamente un JSON y guárdalo fuera del dispositivo.
+
+
+## Versión 1.2
+- Corregido el filtro de Movimientos (estado de tipo de movimiento inicializado).
+- Navegación móvil ampliada a todas las secciones: Recurrentes, Presupuestos, Objetivos y Análisis incluidos.
+- Navegación móvil reorganizada en dos filas para hacer visibles las opciones de planificación.
+- Caché del service worker versionada para forzar la actualización de la interfaz.
+
+## Versión 1.5 · Vista de demostración y acceso por invitación
+- Sin autorización, la aplicación muestra únicamente el panel de inicio con datos ficticios y en modo de solo lectura.
+- Para activar el uso completo, cada dispositivo necesita un código de invitación de un solo uso.
+- Solo la persona que conoce el secreto `ADMIN_KEY` puede utilizar `admin.html` y las rutas `/api/admin/*` para crear invitaciones, consultar dispositivos y revocar accesos. Los usuarios invitados no reciben esa clave. La administración no aparece enlazada en la interfaz normal; el propietario accede directamente a `admin.html`.
+- Los datos financieros no se envían al servicio de autorizaciones: permanecen en el almacenamiento local del navegador.
+- El servicio de autorización requiere desplegar `cloudflare/worker.js`, crear una base D1 con `cloudflare/schema.sql`, enlazarla como `DB` y configurar el secreto `ADMIN_KEY`.
+- Después del despliegue, sustituye `https://REEMPLAZAR.workers.dev` en `auth-config.js` por la URL real del Worker. No publiques ni compartas la clave `ADMIN_KEY`.
+- El propietario abre directamente `admin.html`, introduce la URL del Worker y la clave secreta de administración y genera invitaciones. No compartas `ADMIN_KEY` con nadie. Quien solo recibe un código de invitación no puede generar otros códigos ni administrar dispositivos.
+
+**Importante:** hasta configurar y desplegar el Worker, la vista de demostración funcionará, pero no será posible activar dispositivos. GitHub Pages por sí solo no puede validar invitaciones de forma segura.
+
+
+## Separación de permisos de administración
+- La API exige `Authorization: Bearer ADMIN_KEY` en todas las rutas `/api/admin/*`; sin el secreto devuelve 401.
+- La clave de administración no se incluye en `index.html`, `auth-config.js` ni en el almacenamiento del navegador de los usuarios.
+- La página `admin.html` puede ser técnicamente accesible por URL, pero sus operaciones administrativas están protegidas por el Worker. La interfaz de la aplicación no muestra enlaces a ella.
+- Comparte únicamente códigos de invitación de un solo uso, nunca el secreto `ADMIN_KEY`.

@@ -1,0 +1,9 @@
+name = "gastoslab-access"
+main = "worker.js"
+compatibility_date = "2026-11-19"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "gastoslab-access"
+database_id = "REEMPLAZAR_CON_DATABASE_ID"
+migrations_dir = "."
