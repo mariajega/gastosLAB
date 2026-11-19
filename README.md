@@ -30,3 +30,12 @@ Cada código `GL-XXXX-XXXX` se puede utilizar una sola vez y activa un único na
 ## GitHub Pages y PWA
 
 Subir todo el contenido de la carpeta, conservando `cloudflare/`, `admin.html`, `auth-config.js`, `index.html`, `sw.js`, `manifest.json` e `icons/`. No borrar los datos del navegador ni desinstalar la PWA durante una actualización.
+
+
+## Atajo BBVA con bandeja de entrada iCloud (v1.7)
+
+El atajo debe guardar cada pago como una línea JSON en un archivo `GastosLAB-inbox.jsonl` dentro de iCloud Drive. No debe abrir la URL de GastosLAB. En Atajos, crea el diccionario con estos campos: `id` (UUID), `type` (`expense`), `amount` (importe numérico), `date` (`AAAA-MM-DD`), `merchant` (comercio), `category` (categoría), `method` (`Tarjeta`) y `description` (opcional). Convierte el diccionario a JSON y añade un salto de línea al final. Usa la acción **Añadir a archivo de texto** sobre `GastosLAB-inbox.jsonl` en iCloud Drive.
+
+Para incorporar los pagos, abre GastosLAB desde su icono, entra en Configuración > Bandeja de entrada del atajo y selecciona `GastosLAB-inbox.jsonl` desde Archivos. La importación añade únicamente movimientos nuevos; los identificadores UUID evitan duplicados si se vuelve a importar el mismo archivo. Después de importar, no borres el archivo si quieres conservar el histórico de la bandeja.
+
+La PWA no puede leer silenciosamente archivos de iCloud Drive por las restricciones de iOS; por eso la selección del archivo en GastosLAB es manual. El archivo contiene datos financieros, así que mantenlo en tu iCloud privado.
